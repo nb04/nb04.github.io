@@ -1,7 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload Example</title>
+  <style>
+    .upload-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    .upload-placeholder {
+      width: 300px;
+      height: 300px;
+      border: 2px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .upload-placeholder img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .upload-button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <div class="upload-container">
+    <div class="upload-placeholder" id="filePlaceholder">
+      <span>Upload a PNG or JPEG file</span>
+    </div>
+    <input type="file" id="fileInput" accept=".png, .jpeg, .jpg" style="display:none;">
+    <button class="upload-button" onclick="document.getElementById('fileInput').click();">Upload File</button>
+  </div>
+
+  <script>
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const filePlaceholder = document.getElementById('filePlaceholder');
+          filePlaceholder.innerHTML = '<img src="' + e.target.result + '" alt="Uploaded File">';
+        }
+        reader.readAsDataURL(file);
+      } else {
+        alert('Please upload a valid PNG or JPEG file.');
+      }
+    });
+  </script>
 </body>
 </html>

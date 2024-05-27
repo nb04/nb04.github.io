@@ -16,6 +16,26 @@
       height: 48px
     }
 
+    /* Styles for the title*/
+    .pred {
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      font-family: Arial, sans-serif; 
+      height: 24px
+    }
+
+    /* Styles for the title*/
+    .conf {
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      font-family: Arial, sans-serif; 
+      height: 24px
+    }
+
     /* Styles for the upload container */
     .upload-container {
       display: flex;
@@ -53,9 +73,11 @@
   </style>
 </head>
 <body>
+
   <div class="title">
     <h1>Haddock Spoilage Detection</h1>
   </div>
+
   <!-- Container for the upload elements -->
   <div class="upload-container">
     <!-- Placeholder for the uploaded file or message -->
@@ -67,6 +89,14 @@
     <input type="file" id="fileInput" accept=".png, .jpeg, .jpg" style="display:none;">
     <!-- Button to trigger file upload -->
     <button class="upload-button" onclick="document.getElementById('fileInput').click();">Upload File</button>
+  </div>
+
+  <div class="pred">
+    <p>Prediction: ________</p>
+  </div>
+  
+  <div class="conf">
+    <p>Confidence: ____ %</p>
   </div>
 
   <!-- JavaScript code to handle file upload -->

@@ -5,7 +5,7 @@ let model;
 
 // Load the TensorFlow.js model
 async function loadModel() {
-    model = await tf.loadGraphModel('/tfjs-image-prediction/model/model.json'); // this line may need to be change
+    model = await tf.loadGraphModel('/tfjs-image-prediction/jsmodel/model.json');
     console.log('Model loaded successfully');
 }
 

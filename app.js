@@ -34,7 +34,10 @@ imageUpload.addEventListener('change', async (event) => {
             // Preprocess the image
             const tensor = tf.browser.fromPixels(resizedImage)
                 .toFloat()
-                .div(tf.scalar(255)) // Normalize the image to [0, 1] if required
+
+                // think this already happens in first layer of the model
+                // .div(tf.scalar(255)) // Normalize the image to [0, 1] if required 
+                
                 .expandDims();
 
             // Make a prediction

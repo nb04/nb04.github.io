@@ -1,4 +1,74 @@
+<!-- ChatGPT making it look pretty: -->
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spoilage Prediction</title>
+    <link rel="icon" type="image/x-icon" href="flavicon.ico">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #333;
+        }
+        input[type=file] {
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+        }
+        input[type=file]:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        #imageCanvas {
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+        p {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        #predictionResult {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 20px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image for Prediction</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <canvas id="imageCanvas"></canvas>
+    <p id="predictionResult"></p>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+<!-- old code -->
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,4 +85,4 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="app.js"></script>
 </body>
-</html>
+</html> -->

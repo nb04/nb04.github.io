@@ -22,15 +22,17 @@ imageUpload.addEventListener('change', async (event) => {
         const image = new Image();
         image.src = URL.createObjectURL(file);
         image.onload = async () => {
-            // Display the image on the canvas
+            // Resize the image
+            const resizedImage = await resizeImage(image);
+
+            // Display the resized image on the canvas
             const ctx = imageCanvas.getContext('2d');
-            imageCanvas.width = image.width;
-            imageCanvas.height = image.height;
-            ctx.drawImage(image, 0, 0);
+            imageCanvas.width = resizedImage.width;
+            imageCanvas.height = resizedImage.height;
+            ctx.drawImage(resizedImage, 0, 0);
 
             // Preprocess the image
-            const tensor = tf.browser.fromPixels(image)
-                .resizeNearestNeighbor([224, 224]) // Change to the required size
+            const tensor = tf.browser.fromPixels(resizedImage)
                 .toFloat()
                 .div(tf.scalar(255)) // Normalize the image to [0, 1] if required
                 .expandDims();
@@ -42,8 +44,20 @@ imageUpload.addEventListener('change', async (event) => {
     }
 });
 
+// Function to resize the image
+async function resizeImage(image) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const targetWidth = 224; // Example target width (adjust as needed)
+    const targetHeight = 224; // Example target height (adjust as needed)
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+    return canvas;
+}
+
 // Display prediction result
 function displayPrediction(prediction) {
-    const classLabel = prediction > 0.5 ? 'Positive' : 'Negative'; // Adjust threshold as needed
-    predictionResult.innerText = `Prediction: ${classLabel} with confidence ${(prediction * 100).toFixed(2)}%`;
+    const classLabel = prediction > 0.5 ? 'Spoiled' : 'Fresh'; // Adjust threshold as needed
+    predictionResult.innerText = `Prediction: ${classLabel} with confidence ${(prediction > 0.5 ? prediction * 100 : (1-prediction) * 100).toFixed(2)}%`;
 }

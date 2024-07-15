@@ -7,7 +7,7 @@ let model;
 // Load the TensorFlow.js model
 async function loadModel() {
     try {
-        model = await tf.loadLayersModel('/tfjs-image-prediction/jsmodel_06_12/model.json'); // loadLayersModel instead of loadGraphModel
+        model = await tf.loadLayersModel('/tfjs-image-prediction/jsmodel_07_15/model.json'); // loadLayersModel instead of loadGraphModel
         console.log('Model loaded successfully');
     } catch (error) {
         console.error('Error loading model:', error);

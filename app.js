@@ -3,10 +3,11 @@ const imageCanvas = document.getElementById('imageCanvas');
 const predictionResult = document.getElementById('predictionResult');
 let model;
 
+
 // Load the TensorFlow.js model
 async function loadModel() {
     try {
-        model = await tf.loadLayersModel('/tfjs-image-prediction/jsmodel/model.json'); // loadLayersModel instead of loadGraphModel
+        model = await tf.loadLayersModel('/tfjs-image-prediction/jsmodel_06_12/model.json'); // loadLayersModel instead of loadGraphModel
         console.log('Model loaded successfully');
     } catch (error) {
         console.error('Error loading model:', error);

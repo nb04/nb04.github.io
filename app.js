@@ -1,8 +1,15 @@
 const imageUpload = document.getElementById('imageUpload');
 const imageCanvas = document.getElementById('imageCanvas');
 const predictionResult = document.getElementById('predictionResult');
+const centerXOffset = document.getElementById('centerXOffset');
+const centerYOffset = document.getElementById('centerYOffset');
+const cropSize = document.getElementById('cropSize');
+const centerXOffsetValue = document.getElementById('centerXOffsetValue');
+const centerYOffsetValue = document.getElementById('centerYOffsetValue');
+const cropSizeValue = document.getElementById('cropSizeValue');
+const predictButton = document.getElementById('predictButton');
 let model;
-
+let uploadedImage;
 
 // Load the TensorFlow.js model
 async function loadModel() {
@@ -22,46 +29,83 @@ imageUpload.addEventListener('change', async (event) => {
     if (file) {
         const image = new Image();
         image.src = URL.createObjectURL(file);
-        image.onload = async () => {
-            // Resize the image
-            const resizedImage = await resizeImage(image);
-
-            // Display the resized image on the canvas
-            const ctx = imageCanvas.getContext('2d');
-            imageCanvas.width = resizedImage.width;
-            imageCanvas.height = resizedImage.height;
-            ctx.drawImage(resizedImage, 0, 0);
-
-            // Preprocess the image
-            const tensor = tf.browser.fromPixels(resizedImage)
-                .toFloat()
-
-                // think this already happens in first layer of the model
-                // .div(tf.scalar(255)) // Normalize the image to [0, 1] if required 
-                
-                .expandDims();
-
-            // Make a prediction
-            const predictions = await model.predict(tensor).data();
-            displayPrediction(predictions[0]);
+        image.onload = () => {
+            uploadedImage = image;
+            updateImageCanvas();
         };
     }
 });
 
-// Function to resize the image
-async function resizeImage(image) {
+// Update the canvas and display the resized image
+function updateImageCanvas() {
+    if (!uploadedImage) return;
+
+    const resizedImage = resizeImage(uploadedImage);
+    const ctx = imageCanvas.getContext('2d');
+    imageCanvas.width = resizedImage.width;
+    imageCanvas.height = resizedImage.height;
+    ctx.drawImage(resizedImage, 0, 0);
+}
+
+// Function to resize the image with cropping parameters
+function resizeImage(image) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const targetWidth = 224; // Example target width (adjust as needed)
-    const targetHeight = 224; // Example target height (adjust as needed)
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
-    ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
-    return canvas;
+    const cropWidth = parseInt(cropSize.value);
+    const cropHeight = cropWidth;
+    const centerX = image.width / 2 + parseInt(centerXOffset.value);
+    const centerY = image.height / 2 + parseInt(centerYOffset.value);
+    const startX = Math.max(0, centerX - cropWidth / 2);
+    const startY = Math.max(0, centerY - cropHeight / 2);
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
+    ctx.drawImage(image, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+    // Resize to 224x224 pixels
+    const resizedCanvas = document.createElement('canvas');
+    const resizedCtx = resizedCanvas.getContext('2d');
+    resizedCanvas.width = 224;
+    resizedCanvas.height = 224;
+    resizedCtx.drawImage(canvas, 0, 0, 224, 224);
+    return resizedCanvas;
 }
 
 // Display prediction result
 function displayPrediction(prediction) {
     const classLabel = prediction > 0.5 ? 'Spoiled' : 'Fresh'; // Adjust threshold as needed
-    predictionResult.innerText = `Prediction: ${classLabel} with confidence ${(prediction > 0.5 ? prediction * 100 : (1-prediction) * 100).toFixed(2)}%`;
+    predictionResult.innerText = `Prediction: ${classLabel} with confidence ${(prediction > 0.5 ? prediction * 100 : (1 - prediction) * 100).toFixed(2)}%`;
 }
+
+// Handle prediction generation
+predictButton.addEventListener('click', async () => {
+    if (!uploadedImage) return;
+
+    // Resize the image with the current cropping parameters
+    const resizedImage = resizeImage(uploadedImage);
+
+    // Preprocess the image
+    const tensor = tf.browser.fromPixels(resizedImage)
+        .toFloat()
+        .div(tf.scalar(255.0)) // Normalize to [0, 1]
+        .expandDims();
+
+    // Make a prediction
+    const predictions = await model.predict(tensor).data();
+    displayPrediction(predictions[0]);
+});
+
+// Update slider values display
+centerXOffset.addEventListener('input', () => {
+    centerXOffsetValue.innerText = centerXOffset.value;
+    updateImageCanvas();
+});
+
+centerYOffset.addEventListener('input', () => {
+    centerYOffsetValue.innerText = centerYOffset.value;
+    updateImageCanvas();
+});
+
+cropSize.addEventListener('input', () => {
+    cropSizeValue.innerText = cropSize.value;
+    updateImageCanvas();
+});
